@@ -12,20 +12,20 @@ RESOLVERS=%w(local)
 
 
 def parse_tcpdump(line)
-  if m=/\s+A{1,}\?\s([^\s]+)\s\(\d+\)$/.match(line)
-    return m[1]
-  else 
-    return nil
-  end
-end                             
+   if m=/\s+A{1,}\?\s([^\s]+)\s\(\d+\)$/.match(line)
+      return m[1]
+   else
+      return nil
+   end
+end
 class Resolver
-   
+
    def initialize
       @domains=Hash.new
       @@format = {
-          'tcpdump' => method(:parse_tcpdump)
+         'tcpdump' => method(:parse_tcpdump)
 
-       }
+      }
       # @queue = Queue.new
       @source = STDIN
       @parse_func = nil
@@ -58,7 +58,7 @@ class Resolver
       if opts[:source]=='-'
          @source=STDIN
       else
-         @source=File.open(opt[:source],"rb")
+         @source=File.open(opts[:source],"rb")
       end
 
       # Map resolvers
@@ -67,7 +67,7 @@ class Resolver
          resolver=DomainAgeChecker.new
       end
 
-      if @@format[opts[:format]] 
+      if @@format[opts[:format]]
          @parse_func=opts[:format]
       end
 
@@ -81,58 +81,64 @@ class Resolver
 
       func=@parse_func
       log=@mylog
-     
-      @source.each { |l| 
-         diff=pool.action_size - opts[:max_tasks]
-         while (opts[:max_tasks] - pool.action_size) <0 do
-            log.debug("Sleeping as task count is #{pool.action_size}")
-            sleep(2)
-         end
-         host = parse_tcpdump l
-         # host=@parse_func(l)
-         next if not host
-         d=Domainatrix.parse "mockfix://#{host}"
-         domain="#{d.domain}.#{d.public_suffix}"
-         log.debug "Resolving #{domain}"
-         if @domains.include? domain
-            @domains[domain][:hits]+=1
-            next
-         else
-            pool.queue Proc.new {|dom, store, res|  resolveDomain(dom,store,res,log)}, domain.dup,@domains,resolver,log
-         end
 
+      @source.each { |l|
+         begin
+            diff=pool.action_size - opts[:max_tasks]
+            while (opts[:max_tasks] - pool.action_size) <0 do
+               log.debug("Sleeping as task count is #{pool.action_size}")
+               sleep(2)
+            end
+            host = parse_tcpdump l
+            # host=@parse_func(l)
+            next if not host
+            log.debug
+            d=Domainatrix.parse "mockfix://#{host}"
+            domain="#{d.domain}.#{d.public_suffix}"
+            log.debug "Resolving #{domain}"
+            if @domains.include? domain
+               @domains[domain][:hits]+=1
+               next
+            else
+               pool.queue Proc.new {|dom, store, res|  resolveDomain(dom,store,res,log)}, domain.dup,@domains,resolver,log
+            end
+         rescue => e
+            log.error "Something went wrong: #{e.message}"
+         end
       }
       while pool.action_size >0 do
-        log.debug("Waiting for pool to finish, #{pool.action_size} tasks left")
-        sleep 2
+         log.debug("Waiting for pool to finish, #{pool.action_size} tasks left")
+         sleep 2
       end
       pool.shutdown
-      sorted=@domains.sort_by {|k,v| v[:age]}.map {|k,v| [k,v[:age],v[:hits]]}
-      
-      puts Terminal::Table.new :title => "Summary", 
-                                   :headings => ['Domain', 'Age','Hits'], 
-                                   :rows => sorted
+      reduced=@domains.delete_if{|k,v| not v[:age]}
+      # p reduced
+      sorted=reduced.sort_by {|k,v| v[:age]}.map {|k,v| [k,v[:age],v[:hits]]}
+
+      puts Terminal::Table.new :title => "Summary",
+      :headings => ['Domain', 'Age','Hits'],
+      :rows => sorted
    end
-   
+
 
 end
 
 def resolveDomain(dom,domains,res,log)
-   
+
    begin
-     
+
       domains[dom]={:hits => 1, :age => nil}
-      domains[dom][:age]=res.getAge(dom) 
+      domains[dom][:age]=res.getAge(dom)
    rescue DomainAgeCheckerException => e
       domains[dom][:error]=e.message
    rescue =>e
       log.error "Unhandled exception: #{e.message}"
    end
-   
+
    log.info "Resolved #{dom}, age #{domains[dom][:age]} days"
 end
 if __FILE__ == $0
-    Resolver.new.main
+   Resolver.new().main
 end
 
 
