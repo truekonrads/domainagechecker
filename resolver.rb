@@ -13,7 +13,7 @@ require_relative 'parsers'
 
 RESOLVERS=%w(local remote)
 PARSERS=Parsers.constants
-
+LEVELS=%w(DEBUG INFO WARN ERROR FATAL)
 # def parse_tcpdump(line)
 #    if m=/\s+A{1,}\?\s([^\s]+)\s\(\d+\)$/.match(line)
 #       return m[1]
@@ -46,7 +46,7 @@ class Resolver
       #            test [options] <filenames>+
       #     where [options] are:
       #     EOS
-      opt :resolver, "Which resolver to use, supported resolvers: " + RESOLVERS.join(" "), :type => :string
+      opt :resolver, "Which resolver to use, supported resolvers: " + RESOLVERS.join(", "), :type => :string
       opt :threads, "How many threads to use (at this side)", :type => :int, :default =>1
       opt :max_tasks, "Maximum queue length", :type => :int, :default => 1000
       opt :timeout, "How long to wait before aborting task", :type=> :int, :default => 10
@@ -58,12 +58,15 @@ class Resolver
       opt :http_proxy, "HTTP Proxy for use by remote resolver", :type=>:string
       opt :proxy_user ,"Proxy username", :type=>:string
       opt :proxy_password, "Proxy password", :type=>:string
+      opt :log_level, "log level, valid options are" + LEVELS.join(", "), :type => :string, :default=>'INFO'
     end
 
     Trollop::die :threads , "must be larger than 0" if opts[:threads]<1
     Trollop::die :max_tasks , "must be larger than 0" if opts[:max_tasks]<1
     Trollop::die :resolver, "unknown resolver #{opts[:resolver]}" if not RESOLVERS.include? opts[:resolver]
-
+    Trollop::die :log_level, "unknown log level #{opts[:log_level]}" if not LEVELS.include? opts[:log_level]
+    # binding.pry
+    @mylog.level=Logger::Severity.const_get(opts[:log_level])
     if opts[:source]=='-'
       @source=STDIN
     else
@@ -150,8 +153,9 @@ class Resolver
           domains[dom][:error]=e.message
         rescue =>e
           log.error "Unhandled exception: #{e.message}"
+          return
         end
-        if age <= alert_age
+        if age and age <= alert_age
           log.info "The domain #{dom} is only #{age} days old"
         end
         log.debug "Resolved #{dom}, age #{domains[dom][:age]} days"
