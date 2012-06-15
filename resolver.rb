@@ -4,13 +4,14 @@ require 'trollop'
 require 'actionpool'
 require "log4r"
 # require 'queue'
+require 'pry'
 require 'domainatrix'
 require 'terminal-table'
 include Log4r
 require_relative 'domainagechecker'
 require_relative 'parsers'
 
-RESOLVERS=%w(local)
+RESOLVERS=%w(local remote)
 PARSERS=Parsers.constants
 
 # def parse_tcpdump(line)
@@ -24,10 +25,10 @@ class Resolver
 
   def initialize
     @domains=Hash.new
-    @@format = {
-      'tcpdump' => method(:parse_tcpdump)
+    # @@format = {
+    #   'tcpdump' => method(:parse_tcpdump)
 
-    }
+    # }
     # @queue = Queue.new
     @source = STDIN
     @parse_func = nil
@@ -45,14 +46,18 @@ class Resolver
       #            test [options] <filenames>+
       #     where [options] are:
       #     EOS
-      opt :resolver, "Which resolver to use, supported resolvers: " + RESOLVERS.join(" "), :type => String
+      opt :resolver, "Which resolver to use, supported resolvers: " + RESOLVERS.join(" "), :type => :string
       opt :threads, "How many threads to use (at this side)", :type => :int, :default =>1
       opt :max_tasks, "Maximum queue length", :type => :int, :default => 1000
       opt :timeout, "How long to wait before aborting task", :type=> :int, :default => 10
       opt :source, "Where to read data from, '-' for stdin", :default =>'-'
-      opt :format, "Which parser to use: " + PARSERS.join "," , :default => :TCPDumpParser
-      opt :streaming, "Run in streaming mode",
-        opt :alert_age , "below what age should an alert be generated", :default => 90, :type => :int
+      opt :format, "Which parser to use: " + PARSERS.join(",") , :default => 'TCPDumpParser'
+      opt :streaming, "Run in streaming mode"
+      opt :alert_age , "below what age should an alert be generated", :default => 90, :type => :int
+      opt :resolver_url, "The URL for remote resolver", :type=>:string
+      opt :http_proxy, "HTTP Proxy for use by remote resolver", :type=>:string
+      opt :proxy_user ,"Proxy username", :type=>:string
+      opt :proxy_password, "Proxy password", :type=>:string
     end
 
     Trollop::die :threads , "must be larger than 0" if opts[:threads]<1
@@ -68,10 +73,12 @@ class Resolver
     # Map resolvers
     case opts[:resolver]
     when "local"
-      resolver=DomainAgeChecker.new
+      resolver=DomainAgeChecker.new :logger => @mylog
+    when "remote"
+      resolver=RemoteDomainAgeChecker.new :logger => @mylog, :url => opts[:resolver_url]
     end
-
-    @parse_func=(PARSERS.const_get opts[:format]).parse_line
+    # binding.pry
+    @parse_func=(Parsers.const_get opts[:format]).new
 
 
 
@@ -92,7 +99,7 @@ class Resolver
             log.debug("Sleeping as task count is #{pool.action_size}")
             sleep(2)
           end
-          (host,time) = parse_tcpdump l
+          (host,time) = func.parse_line l
           # host=@parse_func(l)
           next if not host
           d=Domainatrix.parse "mockfix://#{host}"
