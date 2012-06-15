@@ -78,7 +78,18 @@ class Resolver
     when "local"
       resolver=DomainAgeChecker.new :logger => @mylog
     when "remote"
-      resolver=RemoteDomainAgeChecker.new :logger => @mylog, :url => opts[:resolver_url]
+      args={
+         :logger => @mylog, :url => opts[:resolver_url]
+      }
+      if opts[:http_proxy]
+         args[:http_proxy]=opts[:http_proxy]
+         if opts[:proxy_user] then
+            args[:proxy_user] = opts[:proxy_user]
+            args[:proxy_password] = opts[:proxy_password]
+         end
+      end
+
+      resolver=RemoteDomainAgeChecker.new args
     end
     # binding.pry
     @parse_func=(Parsers.const_get opts[:format]).new
@@ -153,6 +164,7 @@ class Resolver
           domains[dom][:error]=e.message
         rescue =>e
           log.error "Unhandled exception: #{e.message}"
+          # binding.pry
           return
         end
         if age and age <= alert_age

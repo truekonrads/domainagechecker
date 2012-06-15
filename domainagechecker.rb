@@ -4,7 +4,7 @@ require 'mongo'
 require 'whois'
 require "log4r"
 require "hashery"
-#require "pry"
+require "pry"
 include Log4r
 require 'typhoeus'
 require "json"
@@ -110,6 +110,7 @@ class RemoteDomainAgeChecker <DomainAgeChecker
          raise ArgumentError, "Mandatory argument :url is missing!"
       end
       @cache = LRUHash.new @opts[:maxentries]
+      @logger=@opts[:logger]
    end
 
   def query(host, ignoreCache = false)
@@ -135,33 +136,49 @@ class RemoteDomainAgeChecker <DomainAgeChecker
       :connect_timeout  =>  1000,            # milliseconds
       :timeout  =>  1000,                    # milliseconds
     }
-    if @opts[:proxy] then
-      topts[:proxy] = @opts[:proxy]
+
+    if @opts[:http_proxy] then
+      topts[:proxy] = @opts[:http_proxy]
     end
 
     if @opts[:proxy_username] then
       topts[:proxy_username] = @opts[:proxy_username]
-      tops[:proxy_password] = @opts[:proxy_password]
+      topts[:proxy_password] = @opts[:proxy_password]
     end
+    # binding.pry
 
-
-    response  = Typhoeus::Request.get("#{@opts[:url]}?domain=#{domain}",topts)
-    if response.success?
-      j=JSON.parse(response.body)
-      j[:success]=true
-      j['created_on']=DateTime.parse(j['created_on']).to_time
-      @cache[domain]=j
-      return j
-    else
-      j=JSON.parse(response.body)
-      cls=Kernel.get_const(j[:exception])
-      if cls.is_a? DomainAgeCheckerException then
-        raise cls.new j[:message], j[:type]
-      else
-        raise RuntimeError "Remote end said: " + j[:error]
+    for i in 0..@opts[:retries]-1
+      response  = Typhoeus::Request.get("#{@opts[:url]}?domain=#{domain}",topts)
+       if response.success?
+         j=JSON.parse(response.body)
+         j[:success]=true
+         j['created_on']=DateTime.parse(j['created_on']).to_time
+         @cache[domain]=j
+         return j
+       else
+         if response.timed_out?
+            if i+1==@opts[:retries] then
+                     raise DomainAgeCheckerException.new "Giving up after #{@opts[:retries]} attempts", :temporary
+            end
+            #puts @opts
+            @logger.debug "Timeout reached for domain #{domain} on try #{i} sleeping for #{@opts[:delayBetweenRetries]} seconds"
+            sleep @opts[:delayBetweenRetries]
+            # This hack ensures that on retries we check if some other thread has already resovled it
+            return @cache[domain] if not ignoreCache and @cache[domain] and @cache[domain][:success]
+               
+            next
+         else
+            j=JSON.parse(response.body)
+            cls=Kernel.get_const(j[:exception])
+            if cls.is_a? DomainAgeCheckerException then
+              raise cls.new j[:message], j[:type]
+            else
+              raise RuntimeError "Remote end said: " + j[:error]
+            end
+         end
       end
-    end
+   end #for
 
-  end
+  end #def query
 
-end
+end #class DomainAgeChecker
