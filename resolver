@@ -1,0 +1,183 @@
+# Logfile created on 2012-11-15 13:37:23 +0000 by logger.rb/31641
+E, [2012-11-15T13:40:05.817286 #15236] ERROR -- : Unhandled exception: undefined method `opts' for #<RemoteDNSDomainAgeChecker:0x007fb7209dea70>
+E, [2012-11-15T13:40:05.817779 #15236] ERROR -- : Unhandled exception: undefined method `opts' for #<RemoteDNSDomainAgeChecker:0x007fb7209dea70>
+E, [2012-11-15T13:40:45.319946 #15253] ERROR -- : Unhandled exception: undefined method `opts' for #<RemoteDNSDomainAgeChecker:0x007fef34865198>
+D, [2012-11-15T13:41:12.188163 #15261] DEBUG -- : Resolving bbc.co.uk
+E, [2012-11-15T13:41:12.188620 #15261] ERROR -- : Unhandled exception: undefined method `opts' for #<RemoteDNSDomainAgeChecker:0x007fe4a28be2d0>
+D, [2012-11-15T13:41:12.188767 #15261] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T13:47:51.624821 #15307] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T13:47:51.625071 #15307] DEBUG -- : Resolving bbc.co.uk
+E, [2012-11-15T13:47:51.625446 #15307] ERROR -- : Unhandled exception: invalid nameserver config: [[true, 53]]
+D, [2012-11-15T13:48:46.351996 #15337] DEBUG -- : Using nameserver true
+D, [2012-11-15T13:48:46.352821 #15337] DEBUG -- : Resolving bbc.co.uk
+E, [2012-11-15T13:48:46.353194 #15337] ERROR -- : Unhandled exception: invalid nameserver config: [[true, 53]]
+D, [2012-11-15T13:48:46.353360 #15337] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T13:49:14.370430 #15347] DEBUG -- : Using nameserver 127.0.0.1
+D, [2012-11-15T13:49:14.371215 #15347] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T13:49:14.371991 #15347] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T13:50:14.312802 #15361] DEBUG -- : Using nameserver 127.0.0.1
+D, [2012-11-15T13:50:14.313911 #15361] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T13:50:14.314112 #15361] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T13:50:14.314365 #15361] DEBUG -- : Using bbc.co.uk.whoislookup.tyrell-corp.co.uk for DNS query
+E, [2012-11-15T13:50:14.317841 #15361] ERROR -- : Unhandled exception: undefined method `[]' for #<Resolv::DNS::Resource::IN::TXT:0x007fe7c39968c8>
+D, [2012-11-15T13:54:13.570874 #15402] DEBUG -- : Using nameserver 127.0.0.1
+D, [2012-11-15T13:54:13.571697 #15402] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T13:54:13.571886 #15402] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T13:54:13.572120 #15402] DEBUG -- : Using bbc.co.uk.whoislookup.tyrell-corp.co.uk for DNS query
+E, [2012-11-15T13:54:13.575442 #15402] ERROR -- : Unhandled exception: undefined method `[]' for #<Resolv::DNS::Resource::IN::TXT:0x007fc37a9b9750>
+D, [2012-11-15T13:55:50.061482 #15473] DEBUG -- : Using nameserver 127.0.0.1
+D, [2012-11-15T13:55:50.062284 #15473] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T13:55:50.062549 #15473] DEBUG -- : Using bbc.co.uk.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T13:55:50.062739 #15473] DEBUG -- : Resolving bbc.co.uk
+E, [2012-11-15T13:55:50.099737 #15473] ERROR -- : Unhandled exception: invalid date
+D, [2012-11-15T13:58:03.887960 #15511] DEBUG -- : Using nameserver 127.0.0.1
+D, [2012-11-15T13:58:03.888828 #15511] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T13:58:03.889112 #15511] DEBUG -- : Using bbc.co.uk.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T13:58:03.889316 #15511] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T13:58:03.894463 #15511] DEBUG -- : Resolved bbc.co.uk, age 5951 days
+D, [2012-11-15T14:11:27.061189 #15632] DEBUG -- : Using nameserver 127.0.0.1
+D, [2012-11-15T14:11:27.062158 #15632] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T14:11:27.062460 #15632] DEBUG -- : Using bbc.co.uk.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:11:27.062637 #15632] DEBUG -- : Resolving bbc.co.uk
+D, [2012-11-15T14:11:27.066440 #15632] DEBUG -- : Resolved bbc.co.uk, age 5951 days
+D, [2012-11-15T14:13:51.957041 #15701] DEBUG -- : Using nameserver 127.0.0.1
+D, [2012-11-15T14:13:51.957841 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.958069 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.958289 #15701] DEBUG -- : Using google.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:51.958417 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.959083 #15701] DEBUG -- : Resolving google.co.uk
+D, [2012-11-15T14:13:51.959310 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.959466 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.959650 #15701] DEBUG -- : Resolving google.co.uk
+D, [2012-11-15T14:13:51.960034 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.960207 #15701] DEBUG -- : Resolving googleusercontent.com
+D, [2012-11-15T14:13:51.960430 #15701] DEBUG -- : Resolving google.co.uk
+D, [2012-11-15T14:13:51.960602 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.960764 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.960924 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.961089 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.961294 #15701] DEBUG -- : Resolving blogger.com
+D, [2012-11-15T14:13:51.961471 #15701] DEBUG -- : Resolving gstatic.com
+D, [2012-11-15T14:13:51.961641 #15701] DEBUG -- : Resolving googleusercontent.com
+D, [2012-11-15T14:13:51.961820 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.962060 #15701] DEBUG -- : Resolving google.co.uk
+D, [2012-11-15T14:13:51.963100 #15701] DEBUG -- : Resolved google.com, age 5541 days
+D, [2012-11-15T14:13:51.963307 #15701] DEBUG -- : Resolving google.co.uk
+D, [2012-11-15T14:13:51.963541 #15701] DEBUG -- : Using google.co.uk.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:51.963741 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.964067 #15701] DEBUG -- : Resolving google.co.uk
+D, [2012-11-15T14:13:51.964420 #15701] DEBUG -- : Resolving google.co.uk
+D, [2012-11-15T14:13:51.964605 #15701] DEBUG -- : Resolving widdershinscomic.com
+D, [2012-11-15T14:13:51.964791 #15701] DEBUG -- : Resolving blogspot.com
+D, [2012-11-15T14:13:51.965033 #15701] DEBUG -- : Resolving blogspot.com
+D, [2012-11-15T14:13:51.965221 #15701] DEBUG -- : Resolving kateashwin.com
+D, [2012-11-15T14:13:51.965399 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.965580 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.965763 #15701] DEBUG -- : Resolving pubnub.com
+D, [2012-11-15T14:13:51.965945 #15701] DEBUG -- : Resolving thedailywtf.com
+D, [2012-11-15T14:13:51.966131 #15701] DEBUG -- : Resolving doubleclick.net
+D, [2012-11-15T14:13:51.966603 #15701] DEBUG -- : Resolved google.co.uk, age 5024 days
+D, [2012-11-15T14:13:51.966762 #15701] DEBUG -- : Resolving thedailywtf.com
+D, [2012-11-15T14:13:51.966972 #15701] DEBUG -- : Resolved google.co.uk, age 5024 days
+D, [2012-11-15T14:13:51.967202 #15701] DEBUG -- : Resolving thedailywtf.com
+D, [2012-11-15T14:13:51.967478 #15701] DEBUG -- : Using googleusercontent.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:51.967667 #15701] DEBUG -- : Resolving feedburner.com
+D, [2012-11-15T14:13:51.968001 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.968360 #15701] DEBUG -- : Resolving xkcd.com
+D, [2012-11-15T14:13:51.968570 #15701] DEBUG -- : Resolving xkcd.com
+D, [2012-11-15T14:13:51.968737 #15701] DEBUG -- : Resolving xkcd.com
+D, [2012-11-15T14:13:51.968906 #15701] DEBUG -- : Resolving xkcd.com
+D, [2012-11-15T14:13:51.969093 #15701] DEBUG -- : Resolving xkcd.com
+D, [2012-11-15T14:13:51.969292 #15701] DEBUG -- : Resolving xkcd.com
+D, [2012-11-15T14:13:51.969474 #15701] DEBUG -- : Resolving threewordphrase.com
+D, [2012-11-15T14:13:51.969638 #15701] DEBUG -- : Resolving oglaf.com
+D, [2012-11-15T14:13:51.969801 #15701] DEBUG -- : Resolving smbc-comics.com
+D, [2012-11-15T14:13:51.969981 #15701] DEBUG -- : Resolving qwantz.com
+D, [2012-11-15T14:13:51.970160 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.970566 #15701] DEBUG -- : Resolved googleusercontent.com, age 1460 days
+D, [2012-11-15T14:13:51.970702 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.970937 #15701] DEBUG -- : Resolving questionablecontent.net
+D, [2012-11-15T14:13:51.971154 #15701] DEBUG -- : Resolved google.co.uk, age 5024 days
+D, [2012-11-15T14:13:51.971318 #15701] DEBUG -- : Resolving buttersafe.com
+D, [2012-11-15T14:13:51.971565 #15701] DEBUG -- : Using blogger.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:51.971937 #15701] DEBUG -- : Resolving buttercupfestival.com
+D, [2012-11-15T14:13:51.972182 #15701] DEBUG -- : Resolving pbfcomics.com
+D, [2012-11-15T14:13:51.972679 #15701] DEBUG -- : Resolving asofterworld.com
+D, [2012-11-15T14:13:51.972925 #15701] DEBUG -- : Resolving asofterworld.com
+D, [2012-11-15T14:13:51.973105 #15701] DEBUG -- : Resolving blogspot.com
+D, [2012-11-15T14:13:51.973287 #15701] DEBUG -- : Resolving gunnerkrigg.com
+D, [2012-11-15T14:13:51.973472 #15701] DEBUG -- : Resolving googlesyndication.com
+D, [2012-11-15T14:13:51.973664 #15701] DEBUG -- : Resolving projectwonderful.com
+D, [2012-11-15T14:13:51.973849 #15701] DEBUG -- : Resolving topatoco.com
+D, [2012-11-15T14:13:51.974034 #15701] DEBUG -- : Resolving google.com
+D, [2012-11-15T14:13:51.974191 #15701] DEBUG -- : Resolving twitter.com
+D, [2012-11-15T14:13:51.974680 #15701] DEBUG -- : Resolved blogger.com, age 4896 days
+D, [2012-11-15T14:13:51.974861 #15701] DEBUG -- : Resolving rsspect.com
+D, [2012-11-15T14:13:51.975075 #15701] DEBUG -- : Using gstatic.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:51.975315 #15701] DEBUG -- : Resolving proboards.com
+D, [2012-11-15T14:13:51.975594 #15701] DEBUG -- : Waiting for pool to finish, 36 tasks left
+D, [2012-11-15T14:13:51.977350 #15701] DEBUG -- : Resolved gstatic.com, age 1740 days
+D, [2012-11-15T14:13:51.977615 #15701] DEBUG -- : Resolved googleusercontent.com, age 1460 days
+D, [2012-11-15T14:13:51.977845 #15701] DEBUG -- : Resolved google.co.uk, age 5024 days
+D, [2012-11-15T14:13:51.978064 #15701] DEBUG -- : Using widdershinscomic.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:51.980157 #15701] DEBUG -- : Resolved widdershinscomic.com, age 667 days
+D, [2012-11-15T14:13:51.980402 #15701] DEBUG -- : Using blogspot.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:52.837988 #15701] DEBUG -- : Resolved blogspot.com, age  days
+D, [2012-11-15T14:13:52.838483 #15701] DEBUG -- : Using blogspot.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:53.406860 #15701] DEBUG -- : Resolved blogspot.com, age  days
+D, [2012-11-15T14:13:53.407130 #15701] DEBUG -- : Using kateashwin.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:53.409508 #15701] DEBUG -- : Resolved kateashwin.com, age 1519 days
+D, [2012-11-15T14:13:53.409777 #15701] DEBUG -- : Using pubnub.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:53.411835 #15701] DEBUG -- : Resolved pubnub.com, age 933 days
+D, [2012-11-15T14:13:53.412094 #15701] DEBUG -- : Using thedailywtf.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:53.976014 #15701] DEBUG -- : Waiting for pool to finish, 28 tasks left
+D, [2012-11-15T14:13:54.068171 #15701] DEBUG -- : Resolved thedailywtf.com, age 3101 days
+D, [2012-11-15T14:13:54.068655 #15701] DEBUG -- : Using doubleclick.net.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:54.606178 #15701] DEBUG -- : Resolved doubleclick.net, age  days
+D, [2012-11-15T14:13:54.606615 #15701] DEBUG -- : Resolved thedailywtf.com, age 3101 days
+D, [2012-11-15T14:13:54.607026 #15701] DEBUG -- : Resolved thedailywtf.com, age 3101 days
+D, [2012-11-15T14:13:54.607392 #15701] DEBUG -- : Using feedburner.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:55.145511 #15701] DEBUG -- : Resolved feedburner.com, age  days
+D, [2012-11-15T14:13:55.145998 #15701] DEBUG -- : Using xkcd.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:55.737824 #15701] DEBUG -- : Resolved xkcd.com, age 3583 days
+D, [2012-11-15T14:13:55.738225 #15701] DEBUG -- : Resolved xkcd.com, age 3583 days
+D, [2012-11-15T14:13:55.738507 #15701] DEBUG -- : Resolved xkcd.com, age 3583 days
+D, [2012-11-15T14:13:55.738770 #15701] DEBUG -- : Resolved xkcd.com, age 3583 days
+D, [2012-11-15T14:13:55.739027 #15701] DEBUG -- : Resolved xkcd.com, age 3583 days
+D, [2012-11-15T14:13:55.739361 #15701] DEBUG -- : Resolved xkcd.com, age 3583 days
+D, [2012-11-15T14:13:55.739668 #15701] DEBUG -- : Using threewordphrase.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:55.976359 #15701] DEBUG -- : Waiting for pool to finish, 17 tasks left
+D, [2012-11-15T14:13:57.976631 #15701] DEBUG -- : Waiting for pool to finish, 17 tasks left
+D, [2012-11-15T14:13:59.712487 #15701] DEBUG -- : Resolved threewordphrase.com, age 1470 days
+D, [2012-11-15T14:13:59.712848 #15701] DEBUG -- : Using oglaf.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:13:59.976913 #15701] DEBUG -- : Waiting for pool to finish, 16 tasks left
+D, [2012-11-15T14:14:00.273127 #15701] DEBUG -- : Resolved oglaf.com, age 1574 days
+D, [2012-11-15T14:14:00.273621 #15701] DEBUG -- : Using smbc-comics.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:14:00.275696 #15701] DEBUG -- : Resolved smbc-comics.com, age  days
+D, [2012-11-15T14:14:00.276088 #15701] DEBUG -- : Using qwantz.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:14:01.977107 #15701] DEBUG -- : Waiting for pool to finish, 14 tasks left
+D, [2012-11-15T14:14:03.977486 #15701] DEBUG -- : Waiting for pool to finish, 14 tasks left
+D, [2012-11-15T14:14:04.649755 #15701] DEBUG -- : Resolved qwantz.com, age 3650 days
+D, [2012-11-15T14:14:04.650283 #15701] DEBUG -- : Using questionablecontent.net.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:14:05.977875 #15701] DEBUG -- : Waiting for pool to finish, 13 tasks left
+D, [2012-11-15T14:14:07.978157 #15701] DEBUG -- : Waiting for pool to finish, 13 tasks left
+D, [2012-11-15T14:14:09.978543 #15701] DEBUG -- : Waiting for pool to finish, 13 tasks left
+D, [2012-11-15T14:14:11.978869 #15701] DEBUG -- : Waiting for pool to finish, 13 tasks left
+D, [2012-11-15T14:14:13.978789 #15701] DEBUG -- : Resolved questionablecontent.net, age 3395 days
+D, [2012-11-15T14:14:13.979102 #15701] DEBUG -- : Using buttersafe.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:14:13.979274 #15701] DEBUG -- : Waiting for pool to finish, 12 tasks left
+D, [2012-11-15T14:14:14.602354 #15701] DEBUG -- : Resolved buttersafe.com, age 2442 days
+D, [2012-11-15T14:14:14.602772 #15701] DEBUG -- : Using buttercupfestival.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:14:15.979472 #15701] DEBUG -- : Waiting for pool to finish, 11 tasks left
+D, [2012-11-15T14:14:17.979841 #15701] DEBUG -- : Waiting for pool to finish, 11 tasks left
+D, [2012-11-15T14:14:19.799472 #15701] DEBUG -- : Resolved buttercupfestival.com, age 3964 days
+D, [2012-11-15T14:14:19.799796 #15701] DEBUG -- : Using pbfcomics.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:14:19.980091 #15701] DEBUG -- : Waiting for pool to finish, 10 tasks left
+D, [2012-11-15T14:14:20.464936 #15701] DEBUG -- : Resolved pbfcomics.com, age 2795 days
+D, [2012-11-15T14:14:20.465314 #15701] DEBUG -- : Using asofterworld.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:14:21.299381 #15701] DEBUG -- : Resolved asofterworld.com, age 3417 days
+D, [2012-11-15T14:14:21.299705 #15701] DEBUG -- : Resolved asofterworld.com, age 3417 days
+D, [2012-11-15T14:14:21.299962 #15701] DEBUG -- : Using blogspot.com.whoislookup.tyrell-corp.co.uk for DNS query
+D, [2012-11-15T14:14:21.980359 #15701] DEBUG -- : Waiting for pool to finish, 7 tasks left
+D, [2012-11-15T14:14:22.014262 #15701] DEBUG -- : Resolved blogspot.com, age  days
+D, [2012-11-15T14:14:22.014611 #15701] DEBUG -- : Using gunnerkrigg.com.whoislookup.tyrell-corp.co.uk for DNS query

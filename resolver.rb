@@ -11,7 +11,7 @@ include Log4r
 require_relative 'domainagechecker'
 require_relative 'parsers'
 
-RESOLVERS=%w(local remote)
+RESOLVERS=%w(local http dns)
 PARSERS=Parsers.constants
 LEVELS=%w(DEBUG INFO WARN ERROR FATAL)
 # def parse_tcpdump(line)
@@ -58,6 +58,8 @@ class Resolver
       opt :http_proxy, "HTTP Proxy for use by remote resolver", :type=>:string
       opt :proxy_user ,"Proxy username", :type=>:string
       opt :proxy_password, "Proxy password", :type=>:string
+      opt :nameserver, "Namserver to use with DNS resolver", :type => :string
+      opt :dnssuffix, "DNS suffix for use with DNS resolver", :type =>:string
       opt :log_level, "log level, valid options are" + LEVELS.join(", "), :type => :string, :default=>'INFO'
     end
 
@@ -65,6 +67,7 @@ class Resolver
     Trollop::die :max_tasks , "must be larger than 0" if opts[:max_tasks]<1
     Trollop::die :resolver, "unknown resolver #{opts[:resolver]}" if not RESOLVERS.include? opts[:resolver]
     Trollop::die :log_level, "unknown log level #{opts[:log_level]}" if not LEVELS.include? opts[:log_level]
+    Trollop::die :dnssuffix, "DNS suffix is mandatory with DNS resolver" if not opts[:dnssuffix]
     # binding.pry
     @mylog.level=Logger::Severity.const_get(opts[:log_level])
     if opts[:source]=='-'
@@ -77,7 +80,7 @@ class Resolver
     case opts[:resolver]
     when "local"
       resolver=DomainAgeChecker.new :logger => @mylog
-    when "remote"
+    when "http"
       args={
          :logger => @mylog, :url => opts[:resolver_url]
       }
@@ -90,6 +93,15 @@ class Resolver
       end
 
       resolver=RemoteDomainAgeChecker.new args
+    when "dns"
+      args={
+         :logger => @mylog, :url => opts[:resolver_url],
+         :suffix => opts[:dnssuffix]
+      }
+      if opts[:nameserver]
+        args[:nameserver]=opts[:nameserver]
+      end
+      resolver=RemoteDNSDomainAgeChecker.new args
     end
     # binding.pry
     @parse_func=(Parsers.const_get opts[:format]).new

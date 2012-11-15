@@ -19,14 +19,19 @@ RubyDNS::run_server do
         created_on=res['created_on']
         refTime=Time.now
         age=((refTime - created_on)/ (60*60*24)).round
-        logger.debug("Responding for #{match_data} with #{age} which was created #{created_on}")
-        transaction.respond!(age.to_s)
+        # logger.debug("Responding for #{match_data} with #{age} which was created #{created_on}")
+        # transaction.respond!(age.to_s)
+        logger.debug("Responding for #{match_data} which was created #{created_on.to_s}")
+        transaction.respond!(created_on.to_s)
       rescue DomainNotFoundException =>e
       	transaction.failure!(:NXDomain)
       	logger.error(e.to_s)
       rescue DomainAgeCheckerException =>e
         transaction.failure!(:ServFail)      
         logger.error(e.to_s)
+      rescue => e
+        transaction.failure!(:ServFail)
+        raise e
        end
     end
 

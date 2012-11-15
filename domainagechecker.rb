@@ -9,6 +9,7 @@ include Log4r
 require 'typhoeus'
 require "json"
 require "date"
+require 'resolv'
 #There are two exception types - :permanent and :temporary
 class DomainAgeCheckerException <StandardError
   attr_reader :type
@@ -55,8 +56,9 @@ class DomainAgeChecker
 
    def query(host, ignoreCache = false)
 
-      d=Domainatrix.parse "mockfix://#{host}"
-      domain="#{d.domain}.#{d.public_suffix}"
+      # d=Domainatrix.parse "mockfix://#{host}"
+      # domain="#{d.domain}.#{d.public_suffix}"
+      domain=self.getDomainFromHost(host)
       if not ignoreCache
          if doc=@coll.find('domain' =>domain).first
             return doc
@@ -95,6 +97,19 @@ class DomainAgeChecker
       end
       return doc
    end
+
+   def getDomainFromHost(host)
+    begin
+      d=Domainatrix.parse "mockfix://#{host}"
+      domain="#{d.domain}.#{d.public_suffix}"
+      return domain
+    rescue # If Domainatrix can't parse, it errs ugly
+      # binding.pry
+      raise DomainAgeCheckerException.new "Can't parse #{host}", :permanent
+    end
+  end
+    
+
 end
 
 class RemoteDomainAgeChecker <DomainAgeChecker
@@ -114,8 +129,7 @@ class RemoteDomainAgeChecker <DomainAgeChecker
    end
 
   def query(host, ignoreCache = false)
-    d=Domainatrix.parse "mockfix://#{host}"
-    domain="#{d.domain}.#{d.public_suffix}"
+    domain=self.getDomainFromHost(host)
 
     if not ignoreCache and @cache[domain]
       if @cache[domain][:success]
@@ -182,3 +196,70 @@ class RemoteDomainAgeChecker <DomainAgeChecker
   end #def query
 
 end #class DomainAgeChecker
+
+
+class RemoteDNSDomainAgeChecker <DomainAgeChecker
+   def initialize (opts={})
+      defaults = {
+         :logger => Logger.new("RemoteDNSDomainAgeChecker") ,
+         # :delayBetweenRetries => 2,
+         :retries => 5,
+         :maxentries => 100000
+      }
+      
+
+      @opts = defaults.merge opts
+      if not @opts[:suffix]
+         raise ArgumentError, "Mandatory argument :suffix is missing!"
+      end
+      @cache = LRUHash.new @opts[:maxentries]
+      @logger=@opts[:logger]
+      if @opts[:nameserver] then 
+        @logger.debug("Using nameserver #{@opts[:nameserver]}")
+        @resolver=Resolv::DNS.new :nameserver => [@opts[:nameserver]]
+
+      else
+        @resolver=Resolv::DNS.new
+      end
+   end
+
+  def query(host, ignoreCache = false)
+    domain=self.getDomainFromHost(host)
+    if not ignoreCache and @cache[domain]
+      if @cache[domain][:success]
+        return @cache[domain]
+      else
+        #BUG: a domainnotfound raises a permanent exception and if a domain is registered after this is cached,
+        # it won't be checked
+        if @cache[domain].is_a? DomainAgeCheckerException and @cache[domain].type=:permanent
+          raise @cache[domain]
+        end
+      end
+    end
+    
+    dnsquery="#{host}.#{@opts[:suffix]}"
+    @logger.debug("Using #{dnsquery} for DNS query")
+    for i in 0..@opts[:retries]-1
+      begin
+        r=@resolver.getresource(dnsquery,Resolv::DNS::Resource::IN::TXT)
+        record={ :success=>true, 'created_on' => DateTime.parse(r.strings[0]).to_time}
+        @cache[domain]=record
+        return record
+      rescue Resolv::ResolvError =>e
+          raise DomainAgeCheckerException.new "Unabe to resolve domain", :permanent
+      rescue Resolv::ResolvTimeout =>e
+            if i+1==@opts[:retries] then
+                     raise DomainAgeCheckerException.new "Giving up after #{@opts[:retries]} attempts", :temporary
+            end
+            #puts @opts
+            @logger.debug "Timeout reached for domain #{domain} on try #{i} sleeping for #{@opts[:delayBetweenRetries]} seconds"
+            sleep @opts[:delayBetweenRetries]
+            # This hack ensures that on retries we check if some other thread has already resovled it
+            return @cache[domain] if not ignoreCache and @cache[domain] and @cache[domain][:success]
+            next
+      end #rescue
+    end #for
+
+  end #def query
+
+end #class RemoteDNSDomainAgeChecker
