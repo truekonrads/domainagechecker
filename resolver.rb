@@ -135,7 +135,7 @@ class Resolver
             @domains[domain][:hits]+=1
             next
           else
-            pool.queue Proc.new {|dom, store, res,log,time,alert_age|  resolveDomain(dom,store,res,log)}, domain.dup,@domains,resolver,log,time,alert_age
+            pool.queue Proc.new {|dom, store, res,log,time,alert_age|  resolveDomain(dom,store,res,log,time,alert_age)}, domain.dup,@domains,resolver,log,time,alert_age
           end
         rescue => e
           log.error "Something went wrong: #{e.message}"
