@@ -5,8 +5,23 @@ require_relative 'domainagechecker'
 require 'trollop'
 require 'time'
 $R = Resolv::DNS.new
-SUFFIX="whoislookup.tyrell-corp.co.uk"
-require 'pry'
+# SUFFIX="whoislookup.tyrell-corp.co.uk"
+# require 'pry'
+
+opts = Trollop::options do
+      version "dnsresolver v0.1a by Konrads Smelkovs"
+      # banner <<-EOS
+      #     Test is an awesome program that does something very, very important.
+      #
+      #     Usage:
+      #            test [options] <filenames>+
+      #     where [options] are:
+      #     EOS
+      opt :dnssuffix, "DNS Suffix", :type => :string, :required => true
+end
+# Trollop::die :dnssuffix, "Please specify DNS suffix" if not opts[:dnssuffix]
+SUFFIX=opts[:dnssuffix]
+
 resolver=DomainAgeChecker.new
 RubyDNS::run_server do
     Name = Resolv::DNS::Name

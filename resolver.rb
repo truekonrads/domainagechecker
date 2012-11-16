@@ -4,7 +4,7 @@ require 'trollop'
 require 'actionpool'
 require "log4r"
 # require 'queue'
-require 'pry'
+# require 'pry'
 require 'domainatrix'
 require 'terminal-table'
 include Log4r
