@@ -29,8 +29,9 @@ end
 class DomainAgeChecker
 
   def initialize (opts={})
+ 
     defaults = {
-      :logger => Logger.new("DomainAgeChecker") ,
+      :logger => self.getDefaultLogger() ,
       :delayBetweenRetries => 2,
       :retries => 5,
 
@@ -44,6 +45,11 @@ class DomainAgeChecker
     @whois = Whois::Client.new
   end
 
+  def getDefaultLogger
+    logger=Log4r::Logger.new(self.class.to_s)
+    logger.outputters = Outputter.stdout
+    return logger
+  end
   #Get the creation date of a domain and return a hash
   #with domain and creation date (Time)
   #throws DomainAgeCheckerException
@@ -115,7 +121,7 @@ end
 class RemoteDomainAgeChecker <DomainAgeChecker
    def initialize (opts={})
       defaults = {
-         :logger => Logger.new("RemoteDomainAgeChecker") ,
+         :logger => self.getDefaultLogger()  ,
          :delayBetweenRetries => 2,
          :retries => 5,
          :maxentries => 100000
@@ -201,7 +207,7 @@ end #class DomainAgeChecker
 class RemoteDNSDomainAgeChecker <DomainAgeChecker
    def initialize (opts={})
       defaults = {
-         :logger => Logger.new("RemoteDNSDomainAgeChecker") ,
+         :logger => self.getDefaultLogger()  ,
          # :delayBetweenRetries => 2,
          :retries => 5,
          :maxentries => 100000

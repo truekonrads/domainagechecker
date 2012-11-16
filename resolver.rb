@@ -32,7 +32,10 @@ class Resolver
     # @queue = Queue.new
     @source = STDIN
     @parse_func = nil
-    @mylog = Logger.new 'resolver'
+    @mylog = Log4r::Logger.new 'resolver'
+    # require 'pry'
+    # binding.pry
+    @mylog.outputters = Outputter.stdout
     # p @mylog
     # @mylog.outputters = Outputter.stdout
   end
@@ -67,7 +70,7 @@ class Resolver
     Trollop::die :max_tasks , "must be larger than 0" if opts[:max_tasks]<1
     Trollop::die :resolver, "unknown resolver #{opts[:resolver]}" if not RESOLVERS.include? opts[:resolver]
     Trollop::die :log_level, "unknown log level #{opts[:log_level]}" if not LEVELS.include? opts[:log_level]
-    Trollop::die :dnssuffix, "DNS suffix is mandatory with DNS resolver" if not opts[:dnssuffix]
+    Trollop::die :dnssuffix, "DNS suffix is mandatory with DNS resolver" if opts[:resolver] == "dns" and not opts[:dnssuffix]
     # binding.pry
     @mylog.level=Logger::Severity.const_get(opts[:log_level])
     if opts[:source]=='-'
