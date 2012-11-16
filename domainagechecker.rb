@@ -4,7 +4,7 @@ require 'mongo'
 require 'whois'
 require "log4r"
 require "hashery"
-require "pry"
+# require "pry"
 include Log4r
 require 'typhoeus'
 require "json"
