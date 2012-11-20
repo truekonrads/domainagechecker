@@ -67,12 +67,15 @@ class DomainAgeChecker
 
     w=nil
     for i in 0..@opts[:retries]-1
-    begin
+     begin
 #puts "Got this far"
-      w=@whois.query domain
+       w=@whois.query domain
  #     puts "Got result for #{domain}"
-      break
-    rescue Whois::ResponseIsThrottled,Errno::ECONNRESET  => throttle 
+       if not w.parser.registered?
+         raise DomainNotFoundException.new domain
+       end
+       break
+     rescue Whois::ResponseIsThrottled,Whois::ConnectionError,Errno::ECONNRESET  => throttle 
  #     binding.pry
      # puts "Going #{i}..."
       if i+1==@opts[:retries] then
@@ -81,7 +84,7 @@ class DomainAgeChecker
       #puts @opts
       @logger.debug "Response is throttled, sleeping"
       sleep @opts[:delayBetweenRetries]
-   end
+     end
     end
       if w.parser.registered?
          if w.created_on
@@ -90,10 +93,10 @@ class DomainAgeChecker
          else
             errmsg="Could not parse WHOIS record for #{domain}"
             @logger.error errmsg
-            raise DomainAgeCheckerException, errmsg, :permanent
+            raise DomainAgeCheckerException.new errmsg, :permanent
          end
       else
-         raise DomainNotFoundException, domain
+         raise DomainNotFoundException.new domain
       end
       return doc
    end
