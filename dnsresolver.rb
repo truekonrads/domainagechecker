@@ -48,11 +48,15 @@ RubyDNS::run_server do
       	transaction.failure!(:NXDomain)
       	logger.error(e.to_s)
       rescue DomainAgeCheckerException =>e
-        transaction.failure!(:ServFail)      
-        logger.error(e.to_s)
+	if e.type==:permanent then
+		transaction.failure!(:NXDomain)
+	else
+        	transaction.failure!(:ServFail)      
+        end
+	logger.error(e.to_s)
       rescue => e
         transaction.failure!(:ServFail)
-        raise e
+        logger.error(e.to_s)
        end
        }
        transaction.defer!
