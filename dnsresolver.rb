@@ -4,6 +4,7 @@ require 'rubydns'
 require_relative 'domainagechecker'
 require 'trollop'
 require 'time'
+# require 'EventMachine'
 $R = Resolv::DNS.new
 # SUFFIX="whoislookup.tyrell-corp.co.uk"
 # require 'pry'
@@ -27,7 +28,8 @@ RubyDNS::run_server do
     Name = Resolv::DNS::Name
     IN = Resolv::DNS::Resource::IN    
 
-    match(/^([.\w-]+)\.#{SUFFIX}$/, IN::TXT) do |match_data, transaction|
+    match(/^([.\w]+)\.#{SUFFIX}$/, IN::TXT) do |match_data, transaction|
+        operation = proc {
         begin
         res=resolver.query(match_data[1])
         # binding.pry
@@ -38,6 +40,10 @@ RubyDNS::run_server do
         # transaction.respond!(age.to_s)
         logger.debug("Responding for #{match_data} which was created #{created_on.to_s}")
         transaction.respond!(created_on.to_s)
+        # require 'pry'
+        # binding.pry
+        transaction.succeed
+        # transaction.success!
       rescue DomainNotFoundException =>e
       	transaction.failure!(:NXDomain)
       	logger.error(e.to_s)
@@ -48,6 +54,9 @@ RubyDNS::run_server do
         transaction.failure!(:ServFail)
         raise e
        end
+       }
+       transaction.defer!
+       EventMachine.defer operation
     end
 
     # Default DNS handler
