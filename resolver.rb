@@ -133,11 +133,12 @@ class Resolver
           next if not host
           d=Domainatrix.parse "mockfix://#{host}"
           domain="#{d.domain}.#{d.public_suffix}"
-          log.debug "Resolving #{domain}"
+          
           if @domains.include? domain
             @domains[domain][:hits]+=1
             next
           else
+            log.debug "Resolving #{domain}"
             pool.queue Proc.new {|dom, store, res,log,time,alert_age|  resolveDomain(dom,store,res,log,time,alert_age)}, domain.dup,@domains,resolver,log,time,alert_age
           end
         rescue => e
@@ -179,6 +180,7 @@ class Resolver
           domains[dom][:error]=e.message
         rescue =>e
           log.error "Unhandled exception: #{e.message}"
+          log.error "Backtrace: #{e.backtrace.join('\n\t')}"
           # binding.pry
           return
         end
