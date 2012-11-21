@@ -1,5 +1,5 @@
 require 'rack'
-require 'domainagechecker'
+require_relative 'domainagechecker'
 require 'json'
 
 class WebResolver
