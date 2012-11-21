@@ -35,10 +35,14 @@ A quick and dirty way to run it is like this:
 	sudo tcpdump -i en1 -n port 53 | ./resolver.rb --source - --streaming --log-level DEBUG
 
 To run the web resolver, just do:
+
     rackup webresolver.ru -p 80 
+
 The 'http://ec2-107-20-29-42.compute-1.amazonaws.com/' is a free resolver ran on EC2
 To run the dns resolver, just do:
+
     sudo dnsresolver.rb -n your.dns.suffix.com
+    
 You can use the DNS suffix domainage.tyrell-corp.co.uk which will lead you to a free resolver ran on EC2
 
 You may want to tune down the log level to INFO
