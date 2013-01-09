@@ -8,9 +8,11 @@ By Konrads Smelkovs <konrads.smelkovs@kpmg.co.uk>. All rights reserved.
 ABOUT
 -----
 
-The Domain Age Checker is a tool which reads dns queries (from tcpdump) and check the age of each domain. If the age is below a certain threshold, the tool alerts the administrator. Domain age is a good indicator of maliciousness.
+The Domain Age Checker is a tool which reads dns queries (from tcpdump) and check the age of each domain. If the age is below a certain threshold, the tool alerts the administrator. Domain age is a good indicator of maliciousness. The more recently registered domain, the more likely it is malicious. This only applies to domains "seen" from conservative vantage points, such as commercial enterprises and does not work (too much SnR) at ISP level.
 
-Domain Age Checker has three components - ruby executable files:
+Domain Age Checker has two components - stream reader and resolver. The stream reader reads data (currently only tcpdump output) and invokes the resolver which obtains the domain age. There are three resolvers: local, remote web and remote dns. 
+
+There are three executable files:
 
  *   resolver.rb:     the main executable which should be invoked with dns query data
  *   webresolver.ru:  a "remote" web resolver which the main resolver can use instead of performing lookups directly.
@@ -38,11 +40,15 @@ To run the web resolver, just do:
 
     rackup webresolver.ru -p 80 
 
-The 'http://ec2-107-20-29-42.compute-1.amazonaws.com/' is a free resolver ran on EC2
+The 'http://ec2-107-20-29-42.compute-1.amazonaws.com/' is a free resolver ran on Amazon EC2
+
 To run the dns resolver, just do:
 
     sudo dnsresolver.rb -n your.dns.suffix.com
     
-You can use the DNS suffix domainage.tyrell-corp.co.uk which will lead you to a free resolver ran on EC2
+This will issue queries like google.com.your.dns.suffix.com. The dns resolver is set up as authorative name server for the zone your.dns.suffix.com.
+You can use the DNS suffix domainage.tyrell-corp.co.uk which will lead you to a free resolver ran on Amazon EC2
 
-You may want to tune down the log level to INFO
+It is OK if there are some errors in the output - not all registrars supply WHOIS information over WHOIS protocol.
+
+By default, logging will be done at INFO level to STDOUT. You can chose to configure it more finely by either adjusting the log level or configuring logger using YALM configuration and the --log4r-config switch. Sample configuration is provided.
