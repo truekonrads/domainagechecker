@@ -3,6 +3,7 @@ require 'rubygems'
 require 'trollop'
 require 'actionpool'
 require "log4r"
+require 'log4r/yamlconfigurator'
 # require 'queue'
 # require 'pry'
 require 'domainatrix'
@@ -14,13 +15,7 @@ require_relative 'parsers'
 RESOLVERS=%w(local http dns)
 PARSERS=Parsers.constants
 LEVELS=%w(DEBUG INFO WARN ERROR FATAL)
-# def parse_tcpdump(line)
-#    if m=/\s+A{1,}\?\s([^\s]+)\s\(\d+\)$/.match(line)
-#       return m[1]
-#    else
-#       return nil
-#    end
-# end
+LOG4R_DEFAULT_LOGGER_NAME="production"
 class Resolver
 
   def initialize
@@ -32,16 +27,16 @@ class Resolver
     # @queue = Queue.new
     @source = STDIN
     @parse_func = nil
-    @mylog = Log4r::Logger.new 'resolver'
-    # require 'pry'
-    # binding.pry
-    @mylog.outputters = Outputter.stdout
-    # p @mylog
-    # @mylog.outputters = Outputter.stdout
+
+  end
+  def setupDefaulLogger   
+      l = Log4r::Logger.new 'resolver'
+      l.outputters = Outputter.stdout
+      return l
   end
   def main
     opts = Trollop::options do
-      version "resolver v0.1a by Konrads Smelkovs"
+      version "resolver v0.2 by Konrads Smelkovs, KPMG LLP 2013"
       # banner <<-EOS
       #     Test is an awesome program that does something very, very important.
       #
@@ -49,7 +44,7 @@ class Resolver
       #            test [options] <filenames>+
       #     where [options] are:
       #     EOS
-      opt :resolver, "Which resolver to use, supported resolvers: " + RESOLVERS.join(", "), :type => :string
+      opt :resolver, "Which resolver to use, supported resolvers: " + RESOLVERS.join(", "), :type => :string, :default => RESOLVERS[0]
       opt :threads, "How many threads to use (at this side)", :type => :int, :default =>1
       opt :max_tasks, "Maximum queue length", :type => :int, :default => 1000
       opt :timeout, "How long to wait before aborting task", :type=> :int, :default => 10
@@ -64,6 +59,8 @@ class Resolver
       opt :nameserver, "Namserver to use with DNS resolver", :type => :string
       opt :dnssuffix, "DNS suffix for use with DNS resolver", :type =>:string
       opt :log_level, "log level, valid options are" + LEVELS.join(", "), :type => :string, :default=>'INFO'
+      opt :log4r_config, "Logger configuration file", :type => :string
+      opt :log4r_logger, "The Log4r logger name to use", :type => :string, :default => LOG4R_DEFAULT_LOGGER_NAME
     end
 
     Trollop::die :threads , "must be larger than 0" if opts[:threads]<1
@@ -71,12 +68,24 @@ class Resolver
     Trollop::die :resolver, "unknown resolver #{opts[:resolver]}" if not RESOLVERS.include? opts[:resolver]
     Trollop::die :log_level, "unknown log level #{opts[:log_level]}" if not LEVELS.include? opts[:log_level]
     Trollop::die :dnssuffix, "DNS suffix is mandatory with DNS resolver" if opts[:resolver] == "dns" and not opts[:dnssuffix]
+    # Trollop::die :log_level, "log_level and log4r_config are not comptabile" if opts[:log4r_config]
+
     # binding.pry
-    @mylog.level=Log4r.const_get(opts[:log_level])
+    
     if opts[:source]=='-'
       @source=STDIN
     else
       @source=File.open(opts[:source],"rb")
+    end
+
+    # Logging setup
+    if opts[:log4r_config]
+      logcfg=Log4r::YamlConfigurator::load_yaml_file opts[:log4r_config]
+      @mylog = Log4r::Logger[opts[:log4r_logger].to_s]
+      puts "Done setting up logger from YAML"
+    else  
+      @mylog=setupDefaulLogger
+      @mylog.level=Log4r.const_get(opts[:log_level])
     end
 
     # Map resolvers
@@ -85,21 +94,20 @@ class Resolver
       resolver=DomainAgeChecker.new :logger => @mylog
     when "http"
       args={
-         :logger => @mylog, :url => opts[:resolver_url]
+        :logger => @mylog, :url => opts[:resolver_url]
       }
       if opts[:http_proxy]
-         args[:http_proxy]=opts[:http_proxy]
-         if opts[:proxy_user] then
-            args[:proxy_user] = opts[:proxy_user]
-            args[:proxy_password] = opts[:proxy_password]
-         end
+        args[:http_proxy]=opts[:http_proxy]
+        if opts[:proxy_user] then
+          args[:proxy_user] = opts[:proxy_user]
+          args[:proxy_password] = opts[:proxy_password]
+        end
       end
-
       resolver=RemoteDomainAgeChecker.new args
     when "dns"
       args={
-         :logger => @mylog, :url => opts[:resolver_url],
-         :suffix => opts[:dnssuffix]
+        :logger => @mylog, :url => opts[:resolver_url],
+        :suffix => opts[:dnssuffix]
       }
       if opts[:nameserver]
         args[:nameserver]=opts[:nameserver]
@@ -133,7 +141,7 @@ class Resolver
           next if not host
           d=Domainatrix.parse "mockfix://#{host}"
           domain="#{d.domain}.#{d.public_suffix}"
-          
+
           if @domains.include? domain
             @domains[domain][:hits]+=1
             next
@@ -148,7 +156,7 @@ class Resolver
 
 
         while pool.action_size >0 do
-            log.debug("Waiting for pool to finish, #{pool.action_size} tasks left")
+            log.debug("Waiting for pool to finish, #{pool.action_size} tasks left ")
             sleep 2
           end
           pool.shutdown

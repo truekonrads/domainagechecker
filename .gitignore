@@ -3,3 +3,4 @@ DomainAgeChecker
 .DS_Store
 Gemfile.lock
 *.sublime-project
+*.sublime-workspace
