@@ -39,8 +39,8 @@ class DomainAgeChecker
     @opts = defaults.merge opts
     @logger=@opts[:logger]
 
-    @conn = Mongo::Connection.new
-    @db = @conn['agechecker']
+    @conn = Mongo::MongoClient.from_uri @opts[:mongodb_uri]
+    @db = @conn['domainagechecker']
     @coll = @db['domains2']
     @whois = Whois::Client.new
   end

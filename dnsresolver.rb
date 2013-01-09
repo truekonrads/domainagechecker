@@ -19,11 +19,12 @@ opts = Trollop::options do
       #     where [options] are:
       #     EOS
       opt :dnssuffix, "DNS Suffix", :type => :string, :required => true
+      opt :mongodb_uri, "URI for mongodb if local resolver is used", :type=> :string, :default => "mongodb://localhost/"
 end
 # Trollop::die :dnssuffix, "Please specify DNS suffix" if not opts[:dnssuffix]
 SUFFIX=opts[:dnssuffix]
 
-resolver=DomainAgeChecker.new
+resolver=DomainAgeChecker.new :mongodb_uri => opts[:mongodb_uri]
 RubyDNS::run_server do
     Name = Resolv::DNS::Name
     IN = Resolv::DNS::Resource::IN    

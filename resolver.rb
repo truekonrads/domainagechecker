@@ -61,6 +61,7 @@ class Resolver
       opt :log_level, "log level, valid options are" + LEVELS.join(", "), :type => :string, :default=>'INFO'
       opt :log4r_config, "Logger configuration file", :type => :string
       opt :log4r_logger, "The Log4r logger name to use", :type => :string, :default => LOG4R_DEFAULT_LOGGER_NAME
+      opt :mongodb_uri, "URI for mongodb if local resolver is used", :type=> :string, :default => "mongodb://localhost/"
     end
 
     Trollop::die :threads , "must be larger than 0" if opts[:threads]<1
@@ -68,6 +69,7 @@ class Resolver
     Trollop::die :resolver, "unknown resolver #{opts[:resolver]}" if not RESOLVERS.include? opts[:resolver]
     Trollop::die :log_level, "unknown log level #{opts[:log_level]}" if not LEVELS.include? opts[:log_level]
     Trollop::die :dnssuffix, "DNS suffix is mandatory with DNS resolver" if opts[:resolver] == "dns" and not opts[:dnssuffix]
+    Trollop::die :mongodb_uri, "Supplying mongodb URI only makes sense if resolver is set to local" if opts[:resolver]!="local"
     # Trollop::die :log_level, "log_level and log4r_config are not comptabile" if opts[:log4r_config]
 
     # binding.pry
@@ -82,7 +84,7 @@ class Resolver
     if opts[:log4r_config]
       logcfg=Log4r::YamlConfigurator::load_yaml_file opts[:log4r_config]
       @mylog = Log4r::Logger[opts[:log4r_logger].to_s]
-      puts "Done setting up logger from YAML"
+      # puts "Done setting up logger from YAML"
     else  
       @mylog=setupDefaulLogger
       @mylog.level=Log4r.const_get(opts[:log_level])
@@ -91,7 +93,7 @@ class Resolver
     # Map resolvers
     case opts[:resolver]
     when "local"
-      resolver=DomainAgeChecker.new :logger => @mylog
+      resolver=DomainAgeChecker.new :logger => @mylog, :mongodb_uri => opts[:mongodb_uri]
     when "http"
       args={
         :logger => @mylog, :url => opts[:resolver_url]
