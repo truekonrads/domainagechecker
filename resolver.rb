@@ -61,7 +61,7 @@ class Resolver
       opt :log_level, "log level, valid options are " + LEVELS.join(", "), :type => :string, :default=>'INFO'
       opt :log4r_config, "Logger configuration file", :type => :string
       opt :log4r_logger, "The Log4r logger name to use", :type => :string, :default => LOG4R_DEFAULT_LOGGER_NAME
-      opt :mongodb_uri, "URI for mongodb if local resolver is used", :type=> :string, :default => "mongodb://localhost/"
+      opt :mongodb_uri, "URI for mongodb if local resolver is used", :type=> :string 
     end
 
     Trollop::die :threads , "must be larger than 0" if opts[:threads]<1
@@ -69,7 +69,7 @@ class Resolver
     Trollop::die :resolver, "unknown resolver #{opts[:resolver]}" if not RESOLVERS.include? opts[:resolver]
     Trollop::die :log_level, "unknown log level #{opts[:log_level]}" if not LEVELS.include? opts[:log_level]
     Trollop::die :dnssuffix, "DNS suffix is mandatory with DNS resolver" if opts[:resolver] == "dns" and not opts[:dnssuffix]
-    Trollop::die :mongodb_uri, "Supplying mongodb URI only makes sense if resolver is set to local" if opts[:resolver]!="local"
+    Trollop::die :mongodb_uri, "Supplying mongodb URI only makes sense if resolver is set to local" if opts[:resolver]!="local" and opts[:mongodb_uri]
     # Trollop::die :log_level, "log_level and log4r_config are not comptabile" if opts[:log4r_config]
 
     # binding.pry
@@ -93,6 +93,9 @@ class Resolver
     # Map resolvers
     case opts[:resolver]
     when "local"
+      if not opts[:mongodb_uri]
+        opts[:mongodb_uri]="mongodb://localhost/"
+      end
       resolver=DomainAgeChecker.new :logger => @mylog, :mongodb_uri => opts[:mongodb_uri]
     when "http"
       args={

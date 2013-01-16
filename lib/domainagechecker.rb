@@ -133,7 +133,7 @@ class RemoteDomainAgeChecker <DomainAgeChecker
       if not @opts[:url]
          raise ArgumentError, "Mandatory argument :url is missing!"
       end
-      @cache = LRUHash.new @opts[:maxentries]
+      @cache = Hashery::LRUHash.new @opts[:maxentries]
       @logger=@opts[:logger]
    end
 
@@ -156,7 +156,7 @@ class RemoteDomainAgeChecker <DomainAgeChecker
       :headers => {
         'User-Agent' => self.class,  # UA
       },
-      :connect_timeout  =>  1000,            # milliseconds
+      :connecttimeout  =>  1000,            # milliseconds
       :timeout  =>  1000,                    # milliseconds
     }
 
@@ -192,7 +192,7 @@ class RemoteDomainAgeChecker <DomainAgeChecker
             next
          else
             j=JSON.parse(response.body)
-            cls=Kernel.get_const(j[:exception])
+            cls=Kernel.const_get(j[:exception])
             if cls.is_a? DomainAgeCheckerException then
               raise cls.new j[:message], j[:type]
             else
@@ -221,7 +221,7 @@ class RemoteDNSDomainAgeChecker <DomainAgeChecker
       if not @opts[:suffix]
          raise ArgumentError, "Mandatory argument :suffix is missing!"
       end
-      @cache = LRUHash.new @opts[:maxentries]
+      @cache = Hashery::LRUHash.new @opts[:maxentries]
       @logger=@opts[:logger]
       if @opts[:nameserver] then 
         @logger.debug("Using nameserver #{@opts[:nameserver]}")
