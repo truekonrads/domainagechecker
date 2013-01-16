@@ -1,10 +1,10 @@
 require 'date'
-# require 'pry'
+
 module Parsers
   class TCPDumpParser
 
     def parse_line(line)
-      if m=/\s+A{1,}\?\s([^\s]+)\s\(\d+\)$/.match(line)
+      if m=/\s+A{1,}\?\s([^\s]+)\s\(\d+\)\s*$/.match(line)
         query=m[1]
       else
         return nil, nil

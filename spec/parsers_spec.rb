@@ -1,4 +1,4 @@
-require_relative '../parsers'
+require_relative '../lib/parsers'
 describe Parsers::TCPDumpParser, '#parse_line' do
   it 'returns hostname and time where time is present' do
     line='2012-06-14 08:32:21.062156 IP 192.168.1.101.57865 > 192.168.1.1.domain: 53727+ A? konrads.smelkovs.com. (38)'

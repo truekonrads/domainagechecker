@@ -1,7 +1,7 @@
 # DNS Resolver
 require 'rubygems'
 require 'rubydns'
-require_relative 'domainagechecker'
+require_relative 'lib/domainagechecker'
 require 'trollop'
 require 'time'
 # require 'EventMachine'

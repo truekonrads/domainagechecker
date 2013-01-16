@@ -1,4 +1,4 @@
-#!/opt/local/bin/ruby
+#!/usr/bin/env ruby
 require 'rubygems'
 require 'trollop'
 require 'actionpool'
@@ -9,8 +9,8 @@ require 'log4r/yamlconfigurator'
 require 'domainatrix'
 require 'terminal-table'
 include Log4r
-require_relative 'domainagechecker'
-require_relative 'parsers'
+require_relative 'lib/domainagechecker'
+require_relative 'lib/parsers'
 
 RESOLVERS=%w(local http dns)
 PARSERS=Parsers.constants
@@ -58,7 +58,7 @@ class Resolver
       opt :proxy_password, "Proxy password", :type=>:string
       opt :nameserver, "Namserver to use with DNS resolver", :type => :string
       opt :dnssuffix, "DNS suffix for use with DNS resolver", :type =>:string
-      opt :log_level, "log level, valid options are" + LEVELS.join(", "), :type => :string, :default=>'INFO'
+      opt :log_level, "log level, valid options are " + LEVELS.join(", "), :type => :string, :default=>'INFO'
       opt :log4r_config, "Logger configuration file", :type => :string
       opt :log4r_logger, "The Log4r logger name to use", :type => :string, :default => LOG4R_DEFAULT_LOGGER_NAME
       opt :mongodb_uri, "URI for mongodb if local resolver is used", :type=> :string, :default => "mongodb://localhost/"
@@ -138,8 +138,7 @@ class Resolver
             log.debug("Sleeping as task count is #{pool.action_size}")
             sleep(2)
           end
-          (host,time) = func.parse_line l
-          # host=@parse_func(l)
+          (host,time) = func.parse_line l        
           next if not host
           d=Domainatrix.parse "mockfix://#{host}"
           domain="#{d.domain}.#{d.public_suffix}"

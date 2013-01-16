@@ -4,8 +4,7 @@ require 'mongo'
 require 'whois'
 require "log4r"
 require "hashery"
-# require "pry"
-include Log4r
+#include Log4r
 require 'typhoeus'
 require "json"
 require "date"
@@ -38,16 +37,19 @@ class DomainAgeChecker
     }
     @opts = defaults.merge opts
     @logger=@opts[:logger]
-
-    @conn = Mongo::MongoClient.from_uri @opts[:mongodb_uri]
+    if @opts[:mongodb_uri]
+      @conn = Mongo::MongoClient.from_uri @opts[:mongodb_uri]
+    else
+      @conn = Mongo::MongoClient.new
+    end
     @db = @conn['domainagechecker']
     @coll = @db['domains2']
     @whois = Whois::Client.new
   end
 
   def getDefaultLogger
-    logger=Log4r::Logger.new(self.class.to_s)
-    logger.outputters = Outputter.stdout
+    logger=Log4r::Logger.new(self.class.to_s)   
+    logger.outputters = Log4r::Outputter.stdout
     return logger
   end
   #Get the creation date of a domain and return a hash
@@ -78,6 +80,7 @@ class DomainAgeChecker
  #     puts "Got result for #{domain}"
 if w.parser.registered?
          if w.created_on
+            converted_time=w.created_on.to_datetime.new_offset(0).to_time
             doc={'domain'=>domain,'created_on'=>w.created_on}
             @coll.insert doc
          else
