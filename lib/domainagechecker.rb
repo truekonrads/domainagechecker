@@ -76,7 +76,7 @@ class DomainAgeChecker
     w=nil
     for i in 0..@opts[:retries]-1
      begin
-     w=@whois.query domain
+     w=@whois.lookup domain
  #     puts "Got result for #{domain}"
 if w.parser.registered?
          if w.created_on

@@ -29,7 +29,8 @@ RubyDNS::run_server do
     Name = Resolv::DNS::Name
     IN = Resolv::DNS::Resource::IN    
 
-    match(/^([-.\w]+)\.#{SUFFIX}$/, IN::TXT) do |match_data, transaction|
+    #match(/^([-.\w]+)\.#{SUFFIX}$/, IN::TXT) do |match_data, transaction|
+    match(/^([-.\w]+)\.#{SUFFIX}$/, IN::TXT) do |transaction, match_data|
         operation = proc {
         begin
         res=resolver.query(match_data[1])
